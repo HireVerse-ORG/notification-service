@@ -1,0 +1,14 @@
+apiVersion: skaffold/v4beta12
+kind: Config
+metadata:
+  name: notification-service
+build:
+  artifacts:
+    - image: hireverse/notification-server
+      docker:
+        dockerfile: Dockerfile
+        target: development
+manifests:
+  rawYaml:
+    - k8s/notification-depl.yaml
+    - k8s/notification.secrets.yaml

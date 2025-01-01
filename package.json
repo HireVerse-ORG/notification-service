@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.12.5",
+    "@hireverse/service-common": "^1.0.7",
+    "@hireverse/service-protos": "^1.0.0",
     "dotenv": "^16.4.7",
     "inversify": "^6.2.1",
     "nodemailer": "^6.9.16",
