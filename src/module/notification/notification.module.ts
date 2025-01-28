@@ -1,15 +1,15 @@
+import { Container } from "inversify";
+import { INotificationService } from "./interfaces/notification.service.interface";
+import { NotificationService } from "./notifications.service";
+import TYPES from "../../core/container/container.types";
+import { NotificationGrpcController } from "./controllers/notification.grpc.controller";
+import { INotificationRepository } from "./interfaces/notification.repository.interface";
+import { NotificationRepository } from "./notification.repository";
+import { NotificationController } from "./controllers/notification.controller";
 
-import { loadProto } from '@hireverse/service-protos';
-import { NotificationController } from './notification.controller';
-import TYPES from '../../core/container/container.types';
-import container from '../../core/container';
-
-const proto = loadProto('notification/notification.proto');
-
-const notificationController = container.get<NotificationController>(TYPES.NotificationController)
-
-export const notificationService = {
-    name: "Notification Service",
-    serviceDefinition: proto.notification.NotificationService.service,
-    implementation: notificationController.getProcedures(),
+export const loadNotificationContainer = (container: Container) => {
+    container.bind<NotificationController>(TYPES.NotificationController).to(NotificationController);
+    container.bind<NotificationGrpcController>(TYPES.NotificationGrpcController).to(NotificationGrpcController);
+    container.bind<INotificationService>(TYPES.NotificationService).to(NotificationService);
+    container.bind<INotificationRepository>(TYPES.NotificationRepository).to(NotificationRepository);
 }

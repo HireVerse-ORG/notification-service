@@ -12,21 +12,19 @@ class Server {
 
     async initialize() {
         registerServices(this.app)
-        process.on('SIGINT', this.shutdown.bind(this));
-        process.on('SIGTERM', this.shutdown.bind(this));
     }
 
-    start(PORT:string) {
+    start(PORT: string) {
         this.app.bindAsync(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure(), (error, port) => {
-            if(error){
-                logger.error(`Error starting Notification server: ${error}`);
+            if (error) {
+                logger.error(`Error starting Notification gRPC server: ${error}`);
                 process.exit(1);
             }
             logger.info(`Notification gRPC service running at 0.0.0.0:${port}`);
         });
     }
 
-    private async shutdown() {
+    close() {
         logger.info('Shutting down gRPC server...');
         this.app.tryShutdown(err => {
             if (err) {

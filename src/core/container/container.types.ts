@@ -1,6 +1,10 @@
 
 export default {
     EmailService: Symbol('EmailService'),
-    NotificationService: Symbol('NotificationService'),
+
+    // notification
     NotificationController: Symbol('NotificationController'),
+    NotificationGrpcController: Symbol('NotificationGrpcController'),
+    NotificationService: Symbol('NotificationService'),
+    NotificationRepository: Symbol('NotificationRepository'),
 };

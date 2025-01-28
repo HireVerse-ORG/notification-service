@@ -11,6 +11,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/morgan": "^1.9.9",
     "@types/nodemailer": "^6.4.17",
     "nodemon": "^3.1.9",
     "ts-node": "^10.0.0",
@@ -20,8 +23,12 @@
     "@grpc/grpc-js": "^1.12.5",
     "@hireverse/service-common": "^1.0.7",
     "@hireverse/service-protos": "^1.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "inversify": "^6.2.1",
+    "mongoose": "^8.9.3",
+    "morgan": "^1.10.0",
     "nodemailer": "^6.9.16",
     "reflect-metadata": "^0.2.2"
   }

@@ -1,10 +1,10 @@
 import { inject, injectable } from "inversify";
-import TYPES from "../../core/container/container.types";
-import { INotificationService } from "./interfaces/notification.service.interface";
-import { grpcWrapper } from "../../core/utils/grpcWrapper";
+import TYPES from "../../../core/container/container.types";
+import { INotificationService } from "../interfaces/notification.service.interface";
+import { grpcWrapper } from "../../../core/utils/grpcWrapper";
 
 @injectable()
-export class NotificationController {
+export class NotificationGrpcController {
     @inject(TYPES.NotificationService) private notificationService!: INotificationService;
 
     public getProcedures() {

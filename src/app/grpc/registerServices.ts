@@ -1,6 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
-import { notificationService } from '../../module/notification/notification.module';
 import { logger } from '../../core/utils/logger';
+import { notificationService } from './services';
 
 const registerServices = (server: grpc.Server) => {
     const services = [notificationService]
