@@ -8,20 +8,16 @@ export enum NotificationType {
 
 export enum NotificationStatus {
   SENT = "sent",
-  DELIVERED = "delivered",
   READ = "read",
-  FAILED = "failed",
 }
 
-
 export interface INotification extends Document {
-  userId: string;
+  id: string;
+  sender: string;
   title: string; 
   message: string; 
   recipient: string | null; 
   type: NotificationType; 
-  sentAt?: Date; 
-  readAt?: Date;
   status: NotificationStatus; 
   metadata?: Record<string, any>; 
   createdAt?: Date; 
@@ -30,13 +26,11 @@ export interface INotification extends Document {
 
 const NotificationSchema: Schema = new Schema<INotification>(
   {
-    userId: { type: String, required: true},
+    sender: { type: String, required: true},
     title: { type: String, required: true, trim: true },
     message: { type: String, required: true, trim: true },
     recipient: { type: String, required: true, default: null },
     type: { type: String, enum: Object.values(NotificationType), required: true },
-    sentAt: { type: Date },
-    readAt: { type: Date },
     status: {
       type: String,
       enum: Object.values(NotificationStatus),
