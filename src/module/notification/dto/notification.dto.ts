@@ -19,7 +19,7 @@ export interface CreateNotificationDTO {
     message: string;
     recipient: string | null;
     type: NotificationType;
-    status: NotificationStatus;
+    status?: NotificationStatus;
     metadata?: Record<string, any>;
 }
 

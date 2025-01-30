@@ -28,20 +28,17 @@ export class EventController {
     private resumeCommentHandler = async (message: ResumeCommentMessage) => {
         const { applicant_user_id, comment, title: job_title, commenter_user_id, job_application_id } = message;
         try {
-            let status = NotificationStatus.SENT;
             const userSocket = await this.socketManager.getSocketId(applicant_user_id);
             
             if (userSocket) {
                 this.socket.emit('new-notification',{ message: "A recruiter has commented on your job application."}, userSocket);
-                status = NotificationStatus.READ;
             }
     
             await this.notificationService.createNotification({
                 sender: commenter_user_id,
                 recipient: applicant_user_id,
                 title: "New comment on your resume",
-                message: `A recruiter has commented on your job application: ${comment}`,
-                status,
+                message: `A recruiter has commented on your job application: ${job_title}`,
                 metadata: {
                     job_application_id,
                     job_title,
