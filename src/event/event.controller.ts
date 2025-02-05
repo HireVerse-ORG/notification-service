@@ -4,10 +4,12 @@ import { KafkaConsumer } from "@hireverse/kafka-communication/dist/kafka";
 import { logger } from "../core/utils/logger";
 import { ISocketService } from "../socket/interface/socket.service.interface";
 import { KafkaTopics } from "@hireverse/kafka-communication/dist/events/topics";
-import { JobApplicationViewUpdatedMessage, JobAppliedMessage, JobJobPostAcceptedMessage, ResumeCommentMessage } from "@hireverse/kafka-communication/dist/events";
+import { JobApplicationViewUpdatedMessage, JobAppliedMessage, 
+        JobJobPostAcceptedMessage, ResumeCommentMessage,
+        FollowRequestedMessage } from "@hireverse/kafka-communication/dist/events";
 import { ISocketManager } from "../socket/interface/socket.manager.interface";
 import { INotificationService } from "../module/notification/interfaces/notification.service.interface";
-import { NotificationStatus, NotificationType } from "../module/notification/notification.model";
+import {NotificationType } from "../module/notification/notification.model";
 
 @injectable()
 export class EventController {
@@ -22,7 +24,22 @@ export class EventController {
             { topic: KafkaTopics.JOB_POST_ACCEPTED, handler: this.jobPostAcceptedHandler},
             { topic: KafkaTopics.JOB_APPLICATION_VIEW_UPDATED, handler: this.jobApplicationViewUpdated},
             { topic: KafkaTopics.RESUME_COMMENTED, handler: this.resumeCommentHandler},
+            { topic: KafkaTopics.FOLLOW_REQUESTED, handler: this.followRequestHandler},
         ])
+    }
+
+    private followRequestHandler = async (message: FollowRequestedMessage) => {
+        const { followedUserId, followerUserType } = message;
+        try {
+            const userSocket = await this.socketManager.getSocketId(followedUserId);
+            
+            if (userSocket) {
+                this.socket.emit('new-notification',{ message: `A ${followerUserType} has followed you.`}, userSocket);
+            }
+    
+        } catch (error) {
+            logger.error(`Failed to process message from ${KafkaTopics.FOLLOW_REQUESTED}`);
+        }
     }
 
     private resumeCommentHandler = async (message: ResumeCommentMessage) => {
