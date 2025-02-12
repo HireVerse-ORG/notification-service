@@ -6,8 +6,8 @@ import GrpcServer from './app/grpc';
 import ExpressServer from './app/express';
 import { checkEnvVariables } from '@hireverse/service-common/dist/utils/envChecker';
 import Database from './core/database';
-import { StartSocketServer, StopSocketServer } from './socket';
-import { startEventService, stopEventService } from './event';
+import { StartSocketServer, StopSocketServer } from './app/socket';
+import { startEventService, stopEventService } from './app/events';
 
 (async () => {
     checkEnvVariables('MAIL_ID', 'MAIL_PASSWORD', 'DATABASE_URL', 'KAFKA_SERVER');

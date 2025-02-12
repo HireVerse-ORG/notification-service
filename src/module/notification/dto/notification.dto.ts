@@ -21,5 +21,6 @@ export interface CreateNotificationDTO {
     type: NotificationType;
     status?: NotificationStatus;
     metadata?: Record<string, any>;
+    createdAt?: Date;
 }
 
