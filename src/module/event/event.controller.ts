@@ -9,9 +9,8 @@ import { KafkaTopics } from "@hireverse/kafka-communication/dist/events/topics";
 import {
     JobApplicationViewUpdatedMessage, JobAppliedMessage,
     JobJobPostAcceptedMessage, ResumeCommentMessage, FollowRequestedMessage,
-    InterviewScheduledMessage,
-    InterviewScheduleAcceptedMessage,
-    InterviewScheduleRejectedMessage
+    InterviewScheduledMessage, InterviewScheduleAcceptedMessage, InterviewScheduleRejectedMessage,
+    JobOfferedMessage, JobOfferAcceptedMessage, JobOfferRejectedMessage
 } from "@hireverse/kafka-communication/dist/events";
 import { ISocketManager } from "../socket/interface/socket.manager.interface";
 import { INotificationService } from "../notification/interfaces/notification.service.interface";
@@ -34,8 +33,116 @@ export class EventController {
             { topic: KafkaTopics.INTERVIEW_SCHEDULED, handler: this.interviewScheduledHandler },
             { topic: KafkaTopics.INTERVIEW_SCHEDULE_ACCEPTED, handler: this.interviewScheduleAcceptedHandler },
             { topic: KafkaTopics.INTERVIEW_SCHEDULE_REJECTED, handler: this.interviewScheduleRejectedHandler },
+            { topic: KafkaTopics.JOB_OFFERED, handler: this.jobOfferedHandler },
+            { topic: KafkaTopics.JOB_OFFER_ACCEPTED, handler: this.jobOfferAcceptedHandler },
+            { topic: KafkaTopics.JOB_OFFER_REJECTED, handler: this.jobOfferRejectedHandler },
         ])
     }
+
+    private jobOfferedHandler = async (message: JobOfferedMessage) => {
+        const { applicantId, compnayId, timestamp } = message;
+
+        try {
+            const userSocket = await this.socketManager.getSocketId(applicantId);
+
+            const title = "Job Offer Received";
+            const notificationMessage = "Congratulations! You have received a job offer from the company. Please review your offer letter and next steps in your dashboard.";
+
+            if (userSocket) {
+                this.socket.emit(
+                    'new-notification',
+                    { message: notificationMessage },
+                    userSocket
+                );
+            }
+
+            await this.notificationService.createNotification({
+                sender: compnayId,
+                recipient: applicantId,
+                title,
+                message: notificationMessage,
+                metadata: {
+                    ...message,
+                    type: "job-offered",
+                },
+                type: NotificationType.IN_APP,
+                createdAt: timestamp
+            });
+
+        } catch (error) {
+            logger.error(`Failed to process message from ${KafkaTopics.JOB_OFFERED}`);
+        }
+    };
+
+    private jobOfferAcceptedHandler = async (message: JobOfferAcceptedMessage) => {
+        const { applicantId, compnayId, timestamp } = message;
+
+        try {
+            const userSocket = await this.socketManager.getSocketId(applicantId);
+
+            const title = "Candidate Accepted Offer";
+            const notificationMessage = "Candidate has accepted your job offer.";
+
+            if (userSocket) {
+                this.socket.emit(
+                    'new-notification',
+                    { message: notificationMessage },
+                    userSocket
+                );
+            }
+
+            await this.notificationService.createNotification({
+                sender: compnayId,
+                recipient: applicantId,
+                title,
+                message: notificationMessage,
+                metadata: {
+                    ...message,
+                    type: "job-offer-accepted",
+                },
+                type: NotificationType.IN_APP,
+                createdAt: timestamp
+            });
+
+        } catch (error) {
+            logger.error(`Failed to process message from ${KafkaTopics.JOB_OFFER_ACCEPTED}`);
+        }
+    };
+
+    private jobOfferRejectedHandler = async (message: JobOfferRejectedMessage) => {
+        const { applicantId, compnayId, timestamp } = message;
+
+        try {
+            const userSocket = await this.socketManager.getSocketId(applicantId);
+
+            const title = "Candidate Declined Offer";
+            const notificationMessage = "Candidate has declined your job offer.";
+
+            if (userSocket) {
+                this.socket.emit(
+                    'new-notification',
+                    { message: notificationMessage },
+                    userSocket
+                );
+            }
+
+            await this.notificationService.createNotification({
+                sender: compnayId,
+                recipient: applicantId,
+                title,
+                message: notificationMessage,
+                metadata: {
+                    ...message,
+                    type: "job-offer-declined",
+                },
+                type: NotificationType.IN_APP,
+                createdAt: timestamp
+            });
+
+        } catch (error) {
+            logger.error(`Failed to process message from ${KafkaTopics.JOB_OFFER_REJECTED}`);
+        }
+    };
 
     private interviewScheduledHandler = async (message: InterviewScheduledMessage) => {
         const { applicantId, interviewerId, scheduledTime, timestamp } = message;
@@ -102,7 +209,7 @@ export class EventController {
             logger.error(`Failed to process message from ${KafkaTopics.INTERVIEW_SCHEDULE_ACCEPTED}`);
         }
     };
-    
+
     private interviewScheduleRejectedHandler = async (message: InterviewScheduleRejectedMessage) => {
         const { applicantId, interviewerId, timestamp } = message;
 
