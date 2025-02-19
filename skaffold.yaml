@@ -7,7 +7,7 @@ build:
     - image: hireverse/notification-server
       docker:
         dockerfile: Dockerfile
-        target: development
+        target: production
 manifests:
   rawYaml:
     - k8s/notification-depl.yaml

@@ -21,8 +21,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 6001
-
 ENV NODE_ENV=development
 
 CMD ["npm", "run", "dev"]
@@ -34,11 +32,9 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install --only=production
+RUN npm install --omit=dev
 
 COPY --from=builder /app/dist ./dist
-
-EXPOSE 6001
 
 ENV NODE_ENV=production
 

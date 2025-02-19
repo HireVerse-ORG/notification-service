@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: notification-depl
+  namespace: hireverse
 spec:
   replicas: 1
   selector:
@@ -26,17 +27,39 @@ spec:
                 secretKeyRef:
                   name: notification-secret
                   key: MAIL_PASSWORD
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: notification-secret
+                  key: DATABASE_URL
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: common-secret
+                  key: JWT_SECRET_KEY
+          envFrom:
+            - configMapRef:
+                name: common-config
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: notification-srv
+  namespace: hireverse
 spec:
   selector:
     app: notification
   ports:
-    - name: notification
+    - name: express
       protocol: TCP
-      port: 6001
-      targetPort: 6001
+      port: 5002
+      targetPort: 5002
+    - name: grpc
+      protocol: TCP
+      port: 6002
+      targetPort: 6002
+    - name: websocket
+      protocol: TCP
+      port: 7002
+      targetPort: 7002
