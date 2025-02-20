@@ -10,5 +10,4 @@ build:
         target: production
 manifests:
   rawYaml:
-    - k8s/notification-depl.yaml
-    - k8s/notification.secrets.yaml
+    - k8s/*
