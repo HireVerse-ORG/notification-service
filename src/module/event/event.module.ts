@@ -23,7 +23,7 @@ const kafkaConnect = new KafkaConnect({
 
 export const kafkaConsumer = new kafka.KafkaConsumer(kafkaConnect, { 
         groupId: "notification-group", 
-        allowAutoTopicCreation: true,
+        allowAutoTopicCreation: process.env.KAFKA_AUTO_CREATE_TOPICS === "true",
     });
 
 export function loadEventContainer(container: Container) {
